@@ -1,3 +1,12 @@
+require('dotenv').config();
+const express = require('express')
+
+const server = express()
+
+server.use(express.json())
+
+
+
 /*
 play this: https://www.youtube.com/watch?v=d-diB65scQU
 
