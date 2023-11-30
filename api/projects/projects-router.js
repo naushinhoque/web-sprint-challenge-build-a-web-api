@@ -47,15 +47,50 @@ router.post('/', async (req, res) => {
 // Returns the updated project as the body of the response.
 // If there is no project with the given id it responds with a status code 404.
 // If the request body is missing any of the required fields it responds with a status code 400.
+router.put('/:id', async (req, res) => {
+    const id = parseInt(req.params.id)
+    const { name, description, completed } = req.body
 
+    if (!name || !description) {
+        res.status(400).send('Missing required fields')
+        return
+    }
+
+    const updatedProject = await projectsModel.update(id, {
+        name, 
+        description, 
+        completed,
+    })
+
+    if (!updatedProject) {
+        res.status(404).send('Project not found')
+        return
+    }
+    res.json(updatedProject)
+})
 
 //  [DELETE] /api/projects/:id
 // Returns no response body.
 // If there is no project with the given id it responds with a status code 404.
+router.delete('/:id', async (req, res) => {
+    const id = parsInt(req.params.id)
+    const deletedCount = await projectsModel.remove(id)
 
+    if (deletedCount === 0) {
+        res.status(404).send('Project not found')
+        return
+    }
+    res.status(204).send()
+})
 
 //  [GET] /api/projects/:id/actions
 // Returns an array of actions (could be empty) belonging to a project with the given id.
 // If there is no project with the given id it responds with a status code 404.
 // Inside api/actions/actions-router.js build endpoints for performing CRUD operations on actions:
+router.get('/:id/actions', async (req, res) => {
+    const id = parsInt(req.params.id)
+    const actions = await projectsModel.getProjectActions(id)
+    res.json(actions)
+})
 
+module.exports = router
