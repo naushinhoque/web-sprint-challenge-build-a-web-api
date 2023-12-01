@@ -1,10 +1,8 @@
 // add middlewares here related to projects
-const projectsModel = require('../projects/projects-model');
+const projectsModel = require('./projects-model');
 
 const validateProjectId = async (req, res, next) => {
-    const projectId = parseInt(req.params.projectId);
-  
-    const existingProject = await projectsModel.get(projectId);
+    const existingProject = await projectsModel.get(req.params.id);
   
     if (!existingProject) {
       res.status(404).send('Invalid project ID');
@@ -14,4 +12,6 @@ const validateProjectId = async (req, res, next) => {
     next();
   };
 
-  module.exports = validateProjectId
+  module.exports = {
+    validateProjectId,
+  }

@@ -1,7 +1,7 @@
 // Write your "projects" router here!
 const express = require('express')
 const projectsModel = require('../projects/projects-model')
-const validateProjectId = require('./projects-middleware').validateProjectId;
+const { validateProjectId } = require('./projects-middleware')
 
 const router = express.Router()
 // [GET] /api/projects
@@ -16,8 +16,8 @@ router.get('/', async (req, res) => {
 // Returns a project with the given id as the body of the response.
 // If there is no project with the given id it responds with a status code 404.
 router.get('/:id', validateProjectId, async (req, res) => {
-    const id = parseInt(req.params.id)
-    const project = await projectsModel.get(id)
+    // const id = parseInt()
+    const project = await projectsModel.get(req.params.id)
 
     if(!project) {
         res.status(404).send('Project not found')
@@ -66,8 +66,8 @@ router.post('/', async (req, res) => {
 // Returns the updated project as the body of the response.
 // If there is no project with the given id it responds with a status code 404.
 // If the request body is missing any of the required fields it responds with a status code 400.
-router.put('/:id', async (req, res) => {
-    const id = parseInt(req.params.id)
+router.put('/:id', validateProjectId, async (req, res) => {
+    // const id = parseInt()
     const { name, description, completed } = req.body
 
     if (!name || !description) {
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
         return
     }
 
-    const updatedProject = await projectsModel.update(id, {
+    const updatedProject = await projectsModel.update(req.params.id, {
         name, 
         description, 
         completed,
@@ -91,9 +91,9 @@ router.put('/:id', async (req, res) => {
 //  [DELETE] /api/projects/:id
 // Returns no response body.
 // If there is no project with the given id it responds with a status code 404.
-router.delete('/:id', async (req, res) => {
-    const id = parseInt(req.params.id)
-    const deletedCount = await projectsModel.remove(id)
+router.delete('/:id', validateProjectId, async (req, res) => {
+    // const id = parseInt()
+    const deletedCount = await projectsModel.remove(req.params.id)
 
     if (deletedCount === 0) {
         res.status(404).send('Project not found')
@@ -106,10 +106,10 @@ router.delete('/:id', async (req, res) => {
 // Returns an array of actions (could be empty) belonging to a project with the given id.
 // If there is no project with the given id it responds with a status code 404.
 // Inside api/actions/actions-router.js build endpoints for performing CRUD operations on actions:
-router.get('/:id/actions', async (req, res) => {
-    const id = parseInt(req.params.id)
-    const actions = await projectsModel.getProjectActions(id)
-    res.json(actions)
-})
+// router.get('/:id/actions', async (req, res) => {
+//     // const id = parseInt()
+//     const actions = await projectsModel.getProjectActions(req.params.id)
+//     res.json(actions)
+// })
 
 module.exports = router
