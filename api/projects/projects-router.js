@@ -1,5 +1,6 @@
 // Write your "projects" router here!
 const projectsModel = require('../projects/projects-model')
+const validateProjectId = require('./projects-middleware').validateProjectId;
 
 const router = express.Router()
 // [GET] /api/projects
@@ -13,8 +14,8 @@ router.get('/', async (req, res) => {
 //  [GET] /api/projects/:id
 // Returns a project with the given id as the body of the response.
 // If there is no project with the given id it responds with a status code 404.
-router.get('/:id', async (req, res) => {
-    const id = parsInt(req.params.id)
+router.get('/:id', validateProjectId, async (req, res) => {
+    const id = parseInt(req.params.id)
     const project = await projectsModel.get(id)
 
     if(!project) {
@@ -27,21 +28,38 @@ router.get('/:id', async (req, res) => {
 //  [POST] /api/projects
 // Returns the newly created project as the body of the response.
 // If the request body is missing any of the required fields it responds with a status code 400.
+        // router.post('/', async (req, res) => {
+        //     const { name, description, completed } = req.body
+
+        //     if (!name || !description) {
+        //         res.status(400).send('Missing required fields')
+        //         return
+        //     }
+
+        //     const newProject = await projectsModel.insert({
+        //         name,
+        //         description,
+        //         completed,
+        //     })
+        //     res.json(newProject)
+        // })
 router.post('/', async (req, res) => {
-    const { name, description, completed } = req.body
-
-    if (!name || !description) {
-        res.status(400).send('Missing required fields')
-        return
-    }
-
-    const newProject = await projectsModel.insert({
-        name,
-        description,
-        completed,
-    })
-    res.json(newProject)
-})
+    const { name, description, completed } = req.body;
+          
+    projectsModel.insert({
+     name,
+     description,
+     completed,
+    }).then(newProject => {
+     res.status(201).json(newProject);
+    }).catch(err => {
+        if (err.code === 11000) {
+         res.status(400).send('Project name already exists');
+        } else {
+        res.status(500).send('Internal server error');
+        }
+     });
+ });
 
 //  [PUT] /api/projects/:id
 // Returns the updated project as the body of the response.
@@ -73,7 +91,7 @@ router.put('/:id', async (req, res) => {
 // Returns no response body.
 // If there is no project with the given id it responds with a status code 404.
 router.delete('/:id', async (req, res) => {
-    const id = parsInt(req.params.id)
+    const id = parseInt(req.params.id)
     const deletedCount = await projectsModel.remove(id)
 
     if (deletedCount === 0) {
