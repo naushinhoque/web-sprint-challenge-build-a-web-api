@@ -11,3 +11,7 @@ const validateActionData = (req, res, next) => {
   
     next();
   };
+
+  module.exports = {
+    validateActionData,
+  }

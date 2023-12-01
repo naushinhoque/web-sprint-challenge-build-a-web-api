@@ -86,7 +86,7 @@ router.put('/:id', validateActionData, async (req, res) => {
         res.status(404).send('Action not found');
     }
 
-    res.json(newAction);
+    res.json(updatedAction);
 })
 
 //  [DELETE] /api/actions/:id

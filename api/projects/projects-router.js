@@ -106,7 +106,7 @@ router.delete('/:id', async (req, res) => {
 // If there is no project with the given id it responds with a status code 404.
 // Inside api/actions/actions-router.js build endpoints for performing CRUD operations on actions:
 router.get('/:id/actions', async (req, res) => {
-    const id = parsInt(req.params.id)
+    const id = parseInt(req.params.id)
     const actions = await projectsModel.getProjectActions(id)
     res.json(actions)
 })
