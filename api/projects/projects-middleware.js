@@ -14,6 +14,4 @@ const validateProjectId = async (req, res, next) => {
     next();
   };
 
-  module.exports = {
-    validateProjectId,
-  }
+  module.exports = validateProjectId

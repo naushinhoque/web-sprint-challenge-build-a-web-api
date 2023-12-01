@@ -12,6 +12,5 @@ const validateActionData = (req, res, next) => {
     next();
   };
 
-  module.exports = {
-    validateActionData,
-  }
+  module.exports = validateActionData
+  
