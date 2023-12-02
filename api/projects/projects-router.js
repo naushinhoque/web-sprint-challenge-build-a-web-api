@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
     }).then(newProject => {
      res.status(201).json(newProject);
     }).catch(err => {
-        if (err.code === 11000) {
+        if (!name || !description) {
          res.status(400).send('Project name already exists');
         } else {
         res.status(500).send('Internal server error');
@@ -71,7 +71,7 @@ router.put('/:id', validateProjectId, async (req, res) => {
     const { name, description, completed } = req.body
 
     if (!name || !description) {
-        res.status(400).send('Missing required fields')
+        res.status(400).send('Missing required fields (name and description')
         return
     }
 
@@ -106,10 +106,10 @@ router.delete('/:id', validateProjectId, async (req, res) => {
 // Returns an array of actions (could be empty) belonging to a project with the given id.
 // If there is no project with the given id it responds with a status code 404.
 // Inside api/actions/actions-router.js build endpoints for performing CRUD operations on actions:
-// router.get('/:id/actions', async (req, res) => {
-//     // const id = parseInt()
-//     const actions = await projectsModel.getProjectActions(req.params.id)
-//     res.json(actions)
-// })
+router.get('/:id/actions', validateProjectId, async (req, res) => {
+    // const id = parseInt()
+    const actions = await projectsModel.getProjectActions(req.params.id)
+    res.json(actions)
+})
 
 module.exports = router

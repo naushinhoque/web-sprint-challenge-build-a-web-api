@@ -1,5 +1,5 @@
 // add middlewares here related to actions
-const actionsModel = require('../actions/actions-model');
+const actionsModel = require('./actions-model');
 
 const validateActionData = (req, res, next) => {
     const { description, notes, project_id } = req.body;
