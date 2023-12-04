@@ -67,12 +67,11 @@ router.post('/', async (req, res) => {
 // If there is no project with the given id it responds with a status code 404.
 // If the request body is missing any of the required fields it responds with a status code 400.
 router.put('/:id', validateProjectId, async (req, res) => {
-    // const id = parseInt()
     const { name, description, completed } = req.body
 
-    if (!name || !description) {
-        res.status(400).send('Missing required fields (name and description')
-        return
+    if (!name || !description || completed === undefined) {
+        res.status(400).send('Missing required fields')
+        return;
     }
 
     const updatedProject = await projectsModel.update(req.params.id, {
